@@ -9,9 +9,9 @@ time_in_correct_position = 0
 def play_melody():
     player = musicalbeeps.Player(volume = 0.3,
                             mute_output = False)
-    player.play_note("C", 1)
-    player.play_note("E", 1)
-    player.play_note("G", 1)
+    player.play_note("C", .5)
+    player.play_note("E", .5)
+    player.play_note("G", .5)
 
 def image_capture():
     global time_in_correct_position
@@ -50,7 +50,7 @@ def image_capture():
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
 
         cv2.imshow("Camera", frame)
-        if time_in_correct_position >= 10: 
+        if time_in_correct_position >= 15: 
             play_melody()
             break
 
