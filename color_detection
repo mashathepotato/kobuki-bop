@@ -1,0 +1,55 @@
+import pyzed.sl as sl
+import numpy as np
+from playsound import playsound
+import time
+
+# Initialize ZED camera
+init_params = sl.InitParameters()
+init_params.camera_resolution = sl.RESOLUTION.RESOLUTION_HD720
+zed = sl.Camera()
+err = zed.open(init_params)
+if err != sl.ERROR_CODE.SUCCESS:
+    print("ZED Camera initialization failed. Exiting.")
+    exit()
+
+def get_average_color(image):
+    frame = sl.Mat()
+    zed.retrieve_image(image, sl.VIEW.VIEW_LEFT)
+    image_data = image.get_data()
+    return np.mean(image_data, axis=(0, 1))
+
+try:
+    while True:
+        # Capture an image from the ZED camera
+        runtime_params = sl.RuntimeParameters()
+        image = sl.Mat()
+        if zed.grab(runtime_params) == sl.ERROR_CODE.SUCCESS:
+            average_color = get_average_color(image)
+
+            # Define color ranges for the 5 musical notes
+            color_ranges = [
+                (0, 50, 50),    # Red
+                (100, 200, 100),  # Green
+                (50, 100, 200),  # Blue
+                (200, 150, 0),   # Orange
+                (150, 0, 150)    # Purple
+            ]
+
+            # Check which range the average_color falls into
+            note_index = None
+            for i, color_range in enumerate(color_ranges):
+                lower_bound, upper_bound = color_range
+                if all(lower_bound <= avg <= upper_bound for avg in average_color):
+                    note_index = i
+                    break
+
+            # Play the corresponding note (sound files assumed to be available)
+            if note_index is not None:
+                sound_file = f"note_{note_index + 1}.wav"  # Replace with actual sound file paths
+                playsound(sound_file)
+
+        time.sleep(30)  # Capture an image every 30 seconds
+
+except KeyboardInterrupt:
+    # Close the camera and exit
+    zed.close()
