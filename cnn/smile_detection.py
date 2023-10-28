@@ -33,15 +33,11 @@ def image_capture():
 
         gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         faces = face_cascade.detectMultiScale(gray_frame, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
-        eyes = eye_cascade.detectMultiScale(gray_frame, scaleFactor=1.4, minNeighbors=25, minSize=(30, 30))
-        eye_glasses = eye_glasses_cascade.detectMultiScale(gray_frame, scaleFactor=1.4, minNeighbors=8, minSize=(30, 30))
+        eye_glasses = eye_glasses_cascade.detectMultiScale(gray_frame, scaleFactor=1.4, minNeighbors=8, minSize=(5, 5))
 
         for (egx, egy, egw, egh) in eye_glasses:
             cv2.rectangle(frame, (egx, egy), (egx+egw, egy+egh), (0, 165, 255), 1)
-
-        for (ex, ey, ew, eh) in eyes:
-            cv2.rectangle(frame, (ex, ey), (ex+ew, ey+eh), (255, 255, 0), 1)
-
+        
         for (x, y, w, h) in faces:
             roi_gray = gray_frame[y:y + h, x:x + w]
             smiles = smile_cascade.detectMultiScale(roi_gray, scaleFactor=1.8, minNeighbors=20, minSize=(25, 25))
