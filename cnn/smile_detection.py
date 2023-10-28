@@ -19,6 +19,7 @@ def image_capture():
     face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
     smile_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_smile.xml")
     eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_eye.xml")
+    eye_glasses_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_eye_tree_eyeglasses.xml")
 
     is_correct_position = False
     time_in_correct_position = 0
@@ -33,6 +34,10 @@ def image_capture():
         gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         faces = face_cascade.detectMultiScale(gray_frame, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
         eyes = eye_cascade.detectMultiScale(gray_frame, scaleFactor=1.4, minNeighbors=25, minSize=(30, 30))
+        eye_glasses = eye_glasses_cascade.detectMultiScale(gray_frame, scaleFactor=1.4, minNeighbors=8, minSize=(30, 30))
+
+        for (egx, egy, egw, egh) in eye_glasses:
+            cv2.rectangle(frame, (egx, egy), (egx+egw, egy+egh), (0, 165, 255), 1)
 
         for (ex, ey, ew, eh) in eyes:
             cv2.rectangle(frame, (ex, ey), (ex+ew, ey+eh), (255, 255, 0), 1)
