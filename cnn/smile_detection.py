@@ -18,6 +18,7 @@ def image_capture():
     camera = cv2.VideoCapture(0)
     face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
     smile_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_smile.xml")
+    eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_eye.xml")
 
     is_correct_position = False
     time_in_correct_position = 0
@@ -31,6 +32,10 @@ def image_capture():
 
         gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         faces = face_cascade.detectMultiScale(gray_frame, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+        eyes = eye_cascade.detectMultiScale(gray_frame, scaleFactor=1.4, minNeighbors=25, minSize=(30, 30))
+
+        for (ex, ey, ew, eh) in eyes:
+            cv2.rectangle(frame, (ex, ey), (ex+ew, ey+eh), (255, 255, 0), 1)
 
         for (x, y, w, h) in faces:
             roi_gray = gray_frame[y:y + h, x:x + w]
